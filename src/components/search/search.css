@@ -1,0 +1,37 @@
+.search__form {
+  display: flex;
+  justify-content: center;
+}
+.search__input {
+  height: 50px;
+  width: 530px;
+  padding: 6px 16px;
+  margin-right: 20px;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.search__button {
+  width: 150px;
+}
+
+.books {
+  margin-top: 60px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.book {
+  margin-right: 30px;
+  margin-bottom: 30px;
+  background-color: #aaa;
+  width: 300px;
+  display: block;
+  text-align: center;
+}
+
+.book_img {
+  width: 100%;
+}
