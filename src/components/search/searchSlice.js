@@ -10,6 +10,10 @@ const searchSlice = createSlice({
     books: [],
     loading: false,
     error: false,
+    total: 0,
+    start: 1,
+    step: 30,
+    hasMore: false,
   },
   reducers: {
     changeValue: (state, action) => {
@@ -23,26 +27,56 @@ const searchSlice = createSlice({
       state.loading = false;
     },
     booksSuccess: (state, action) => {
-      state.books = action.payload;
+      state.books = action.payload.items;
+      state.total = action.payload.totalItems;
       state.loading = false;
+      state.hasMore = true;
+    },
+    addMore: (state, action) => {
+      state.start += 30;
+      state.books = state.books.concat(action.payload.items);
+      state.loading = false;
+      state.hasMore = true;
     },
   },
 });
 
-export const loadBooks = (value) => async (dispatch) => {
+export const loadBooks = (value, start, step) => async (dispatch) => {
   dispatch(startLoading());
   try {
     await axios
       .get(
-        `https://www.googleapis.com/books/v1/volumes?q=${value}&key=${APIKEY}`
+        `https://www.googleapis.com/books/v1/volumes?q=${value}&key=${APIKEY}&startIndex=${start}&maxResults=${step}`
       )
-      .then((response) => dispatch(booksSuccess(response.data.items)));
+      /*       .get(
+        `https://www.googleapis.com/books/v1/volumes?q=${value}&key=${APIKEY}&maxResults=${step}`
+      ) */
+      .then((response) => {
+        dispatch(booksSuccess(response.data));
+        /*         dispatch(addMore(start + 29)); */
+      });
   } catch (e) {
-    console.error(e.response.data.error);
+    console.error(e.message);
     dispatch(hasError(e.message));
   }
 };
 
-export const { startLoading, hasError, booksSuccess, changeValue } =
+export const loadMoreBooks = (value, start, step) => async (dispatch) => {
+  dispatch(startLoading());
+  try {
+    await axios
+      .get(
+        `https://www.googleapis.com/books/v1/volumes?q=${value}&key=${APIKEY}&startIndex=${start}&maxResults=${step}`
+      )
+      .then((response) => {
+        dispatch(addMore(response.data));
+      });
+  } catch (e) {
+    console.error(e.message);
+    dispatch(hasError(e.message));
+  }
+};
+
+export const { startLoading, hasError, booksSuccess, changeValue, addMore } =
   searchSlice.actions;
 export default searchSlice.reducer;

@@ -1,46 +1,20 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, { useRef, useCallback, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Button from "@material-ui/core/Button";
 import "./search.css";
 import Spinner from "../spinner/Spinner";
-import { loadBooks, changeValue } from "./searchSlice";
+import { loadBooks, changeValue, loadMoreBooks } from "./searchSlice";
 
 const Search = () => {
-  /*   const [value, setValue] = useState(""); */
-  /*   const [books, setBooks] = useState([]);
-  const [apiKey, setApiKey] = useState(
-    "AIzaSyCB8PfFXDphK1Tya39UxBb-mzHv_qCSoK8"
-  ); */
-  const textArea = useRef(null);
-  /*   const [loading, setLoading] = useState(false); */
+  const input = useRef(null);
 
-  const { value, books, loading } = useSelector((state) => state.search);
+  const { value, books, loading, total, start, step, hasMore } = useSelector(
+    (state) => state.search
+  );
 
   const dispatch = useDispatch();
 
-  /*  useEffect(() => {
-    dispatch(loadBooks());
-  }, [dispatch]);  */
-
-  const focus = useCallback(() => textArea.current?.focus(), []);
-
-  /*   const loadBooks = useCallback(
-    (value) => {
-      setLoading(true);
-      axios
-        .get(
-          "https://www.googleapis.com/books/v1/volumes?q=" +
-            value +
-            "&key=" +
-            apiKey
-        )
-        .then((data) => {
-          setBooks(data.data.items);
-        });
-      setLoading(false);
-    },
-    [value]
-  ); */
+  const focus = useCallback(() => input.current?.focus(), []);
 
   const handleChange = (e) => {
     dispatch(changeValue(e.target.value));
@@ -49,9 +23,13 @@ const Search = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (value !== "") {
-      dispatch(loadBooks(value));
+      dispatch(loadBooks(value, start, step));
     }
   };
+
+  useEffect(() => {
+    loadMoreBooks();
+  }, []);
 
   return (
     <div className="search">
@@ -60,7 +38,7 @@ const Search = () => {
           <input
             className="search__input"
             label="Search"
-            ref={textArea}
+            ref={input}
             value={value}
             onChange={handleChange}
           />
@@ -76,25 +54,30 @@ const Search = () => {
         </Button>
       </form>
 
-      {loading ? (
-        <Spinner />
-      ) : (
-        <div className="books">
-          {books.map((book, key) => (
-            <div className="book" key={book.id}>
-              <img
-                src={book.volumeInfo.imageLinks.thumbnail}
-                alt={book.volumeInfo.title}
-                className="book__img"
-              />
-              <p className="book__category">
-                Category: {book.volumeInfo.categories}
-              </p>
-              <h3 className="book__title">{book.volumeInfo.title}</h3>
-              <p className="book__authors">{book.volumeInfo.authors}</p>
-            </div>
-          ))}
-        </div>
+      <p className="total">{total}</p>
+
+      {loading && <Spinner />}
+
+      <div className="books">
+        {books.map((book, key) => (
+          <div className="book" key={book.id}>
+            <img
+              src={book.volumeInfo.imageLinks?.thumbnail}
+              alt={book.volumeInfo.title}
+              className="book__img"
+            />
+            <p className="book__category">
+              Category: {book.volumeInfo.categories}
+            </p>
+            <h3 className="book__title">{book.volumeInfo.title}</h3>
+            <p className="book__authors">{book.volumeInfo.authors}</p>
+          </div>
+        ))}
+      </div>
+      {!loading && (
+        <button onClick={() => dispatch(loadMoreBooks(value, start, step))}>
+          Load more
+        </button>
       )}
     </div>
   );

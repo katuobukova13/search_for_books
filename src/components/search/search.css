@@ -4,7 +4,7 @@
 }
 .search__input {
   height: 50px;
-  width: 530px;
+  width: 630px;
   padding: 6px 16px;
   margin-right: 20px;
   border-radius: 4px;
@@ -32,6 +32,13 @@
   text-align: center;
 }
 
-.book_img {
+.book__img {
   width: 100%;
+}
+
+.total {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 20px;
+  font-weight: bold;
 }
