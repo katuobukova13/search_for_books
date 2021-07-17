@@ -1,0 +1,18 @@
+#search__button {
+  width: 150px;
+  background: rgba(63, 81, 181, 0.85);
+}
+#search__button:hover {
+  background: rgba(63, 81, 181, 1);
+}
+
+#load__button {
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  background: rgba(63, 81, 181, 0.85);
+  margin-bottom: 30px;
+}
+#load__button:hover {
+  background: rgba(63, 81, 181, 1);
+}

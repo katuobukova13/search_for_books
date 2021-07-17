@@ -1,15 +1,15 @@
 import Search from "./components/search/Search";
+import { Container } from "@material-ui/core";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import "./css/app.css";
-import { useSelector, useDispatch } from "react-redux";
+import Header from "./components/Header/Header";
 
 function App() {
   return (
     <>
-      <CssBaseline>
-        <h1 className="title">Search for books</h1>
-        <Search />
-      </CssBaseline>
+      <CssBaseline />
+      <Container maxWidth="lg">
+        <Header />
+      </Container>
     </>
   );
 }

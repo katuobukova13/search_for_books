@@ -14,10 +14,18 @@ const searchSlice = createSlice({
     start: 1,
     step: 30,
     hasMore: false,
+    category: "",
+    sort: "relevance",
   },
   reducers: {
     changeValue: (state, action) => {
       state.value = action.payload;
+    },
+    changeCategory: (state, action) => {
+      state.category = action.payload;
+    },
+    changeSort: (state, action) => {
+      state.sort = action.payload;
     },
     startLoading: (state) => {
       state.loading = true;
@@ -38,28 +46,31 @@ const searchSlice = createSlice({
       state.loading = false;
       state.hasMore = true;
     },
+    loadSort: (state, action) => {
+      state.books = action.payload.items;
+      state.total = action.payload.totalItems;
+      state.loading = false;
+      state.hasMore = true;
+    },
   },
 });
 
-export const loadBooks = (value, start, step) => async (dispatch) => {
-  dispatch(startLoading());
-  try {
-    await axios
-      .get(
-        `https://www.googleapis.com/books/v1/volumes?q=${value}&key=${APIKEY}&startIndex=${start}&maxResults=${step}`
-      )
-      /*       .get(
-        `https://www.googleapis.com/books/v1/volumes?q=${value}&key=${APIKEY}&maxResults=${step}`
-      ) */
-      .then((response) => {
-        dispatch(booksSuccess(response.data));
-        /*         dispatch(addMore(start + 29)); */
-      });
-  } catch (e) {
-    console.error(e.message);
-    dispatch(hasError(e.message));
-  }
-};
+export const loadBooks =
+  (value, start, step, category, sort) => async (dispatch) => {
+    dispatch(startLoading());
+    try {
+      await axios
+        .get(
+          `https://www.googleapis.com/books/v1/volumes?q=${value}+subject:${category}&orderBy=${sort}&key=${APIKEY}&startIndex=${start}&maxResults=${step}`
+        )
+        .then((response) => {
+          dispatch(booksSuccess(response.data));
+        });
+    } catch (e) {
+      console.error(e.message);
+      dispatch(hasError(e.message));
+    }
+  };
 
 export const loadMoreBooks = (value, start, step) => async (dispatch) => {
   dispatch(startLoading());
@@ -77,6 +88,34 @@ export const loadMoreBooks = (value, start, step) => async (dispatch) => {
   }
 };
 
-export const { startLoading, hasError, booksSuccess, changeValue, addMore } =
-  searchSlice.actions;
+export const loadSortedBooks =
+  (value, start, step, category, sort) => async (dispatch) => {
+    dispatch(startLoading());
+    try {
+      await axios
+        .get(
+          `https://www.googleapis.com/books/v1/volumes?q=${value}+subject:${category}&orderBy=${sort}&key=${APIKEY}&startIndex=${start}&maxResults=${step}`
+        )
+        .then((response) => {
+          dispatch(changeCategory(category));
+          dispatch(changeSort(sort));
+          console.log(response);
+          dispatch(loadSort(response.data));
+        });
+    } catch (e) {
+      console.error(e.message);
+      dispatch(hasError(e.message));
+    }
+  };
+
+export const {
+  startLoading,
+  hasError,
+  booksSuccess,
+  changeValue,
+  addMore,
+  changeCategory,
+  changeSort,
+  loadSort,
+} = searchSlice.actions;
 export default searchSlice.reducer;

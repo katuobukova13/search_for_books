@@ -1,16 +1,16 @@
 import React, { useRef, useCallback, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Button from "@material-ui/core/Button";
+import ButtonCastome from "../button/Button";
 import "./search.css";
 import Spinner from "../spinner/Spinner";
 import { loadBooks, changeValue, loadMoreBooks } from "./searchSlice";
+import Sorting from "../sorting/Sorting";
 
 const Search = () => {
   const input = useRef(null);
 
-  const { value, books, loading, total, start, step, hasMore } = useSelector(
-    (state) => state.search
-  );
+  const { value, books, loading, total, start, step, category, sort } =
+    useSelector((state) => state.search);
 
   const dispatch = useDispatch();
 
@@ -23,7 +23,7 @@ const Search = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (value !== "") {
-      dispatch(loadBooks(value, start, step));
+      dispatch(loadBooks(value, start, step, category, sort));
     }
   };
 
@@ -43,41 +43,43 @@ const Search = () => {
             onChange={handleChange}
           />
         </div>
-        <Button
-          variant="contained"
-          color="secondary"
-          type="submit"
-          className="search__button"
+        <ButtonCastome
           onClick={focus}
-        >
-          Search
-        </Button>
+          buttonName="Search"
+          id="search__button"
+        />
       </form>
+
+      <Sorting />
 
       <p className="total">{total}</p>
 
       {loading && <Spinner />}
 
       <div className="books">
-        {books.map((book, key) => (
-          <div className="book" key={book.id}>
-            <img
-              src={book.volumeInfo.imageLinks?.thumbnail}
-              alt={book.volumeInfo.title}
-              className="book__img"
-            />
-            <p className="book__category">
-              Category: {book.volumeInfo.categories}
-            </p>
-            <h3 className="book__title">{book.volumeInfo.title}</h3>
-            <p className="book__authors">{book.volumeInfo.authors}</p>
-          </div>
-        ))}
+        {books.map((book, key) => {
+          return (
+            <div className="book" key={book.id}>
+              <a target="_blank" href="#">
+                <img
+                  src={book.volumeInfo.imageLinks?.thumbnail}
+                  alt={book.volumeInfo.title}
+                  className="book__img"
+                />
+                <p className="book__category">{book.volumeInfo.categories}</p>
+                <h3 className="book__title">{book.volumeInfo.title}</h3>
+                <p className="book__authors">{book.volumeInfo.authors}</p>
+              </a>
+            </div>
+          );
+        })}
       </div>
       {!loading && (
-        <button onClick={() => dispatch(loadMoreBooks(value, start, step))}>
-          Load more
-        </button>
+        <ButtonCastome
+          onClick={() => dispatch(loadMoreBooks(value, start, step))}
+          buttonName="Load More"
+          id="load__button"
+        />
       )}
     </div>
   );
