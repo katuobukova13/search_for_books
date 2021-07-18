@@ -1,0 +1,17 @@
+.title {
+  text-align: center;
+  font-size: 40px;
+  color: rgba(63, 81, 181, 1);
+}
+.header {
+  background-color: rgba(63, 81, 181, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: 33%;
+}
+
+@media (max-width: 1024px) {
+  .title {
+    font-size: 30px;
+  }
+}

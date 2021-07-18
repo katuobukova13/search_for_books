@@ -13,9 +13,9 @@ const searchSlice = createSlice({
     total: 0,
     start: 1,
     step: 30,
-    hasMore: false,
     category: "",
     sort: "relevance",
+    visible: false,
   },
   reducers: {
     changeValue: (state, action) => {
@@ -38,19 +38,17 @@ const searchSlice = createSlice({
       state.books = action.payload.items;
       state.total = action.payload.totalItems;
       state.loading = false;
-      state.hasMore = true;
+      state.visible = true;
     },
     addMore: (state, action) => {
       state.start += 30;
       state.books = state.books.concat(action.payload.items);
       state.loading = false;
-      state.hasMore = true;
     },
     loadSort: (state, action) => {
       state.books = action.payload.items;
       state.total = action.payload.totalItems;
       state.loading = false;
-      state.hasMore = true;
     },
   },
 });
@@ -99,7 +97,7 @@ export const loadSortedBooks =
         .then((response) => {
           dispatch(changeCategory(category));
           dispatch(changeSort(sort));
-          console.log(response);
+          console.log(response.config.url);
           dispatch(loadSort(response.data));
         });
     } catch (e) {

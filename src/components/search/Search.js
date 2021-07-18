@@ -1,16 +1,16 @@
-import React, { useRef, useCallback, useEffect } from "react";
+import React, { useRef, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ButtonCastome from "../button/Button";
 import "./search.css";
-import Spinner from "../spinner/Spinner";
-import { loadBooks, changeValue, loadMoreBooks } from "./searchSlice";
+import { loadBooks, changeValue } from "./searchSlice";
 import Sorting from "../sorting/Sorting";
 
 const Search = () => {
   const input = useRef(null);
 
-  const { value, books, loading, total, start, step, category, sort } =
-    useSelector((state) => state.search);
+  const { value, start, step, category, sort } = useSelector(
+    (state) => state.search
+  );
 
   const dispatch = useDispatch();
 
@@ -27,10 +27,6 @@ const Search = () => {
     }
   };
 
-  useEffect(() => {
-    loadMoreBooks();
-  }, []);
-
   return (
     <div className="search">
       <form onSubmit={handleSubmit} autoComplete="off" className="search__form">
@@ -43,6 +39,7 @@ const Search = () => {
             onChange={handleChange}
           />
         </div>
+
         <ButtonCastome
           onClick={focus}
           buttonName="Search"
@@ -51,36 +48,6 @@ const Search = () => {
       </form>
 
       <Sorting />
-
-      <p className="total">{total}</p>
-
-      {loading && <Spinner />}
-
-      <div className="books">
-        {books.map((book, key) => {
-          return (
-            <div className="book" key={book.id}>
-              <a target="_blank" href="#">
-                <img
-                  src={book.volumeInfo.imageLinks?.thumbnail}
-                  alt={book.volumeInfo.title}
-                  className="book__img"
-                />
-                <p className="book__category">{book.volumeInfo.categories}</p>
-                <h3 className="book__title">{book.volumeInfo.title}</h3>
-                <p className="book__authors">{book.volumeInfo.authors}</p>
-              </a>
-            </div>
-          );
-        })}
-      </div>
-      {!loading && (
-        <ButtonCastome
-          onClick={() => dispatch(loadMoreBooks(value, start, step))}
-          buttonName="Load More"
-          id="load__button"
-        />
-      )}
     </div>
   );
 };

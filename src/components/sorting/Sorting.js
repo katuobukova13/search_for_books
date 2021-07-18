@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import "./sorting.css";
 import Filter from "../filter/Filter";
@@ -36,9 +36,7 @@ const Sorting = () => {
   };
 
   useEffect(() => {
-    if (category !== "") {
-      dispatch(loadSortedBooks(value, start, step, category, sort));
-    }
+    dispatch(loadSortedBooks(value, start, step, category, sort));
   }, [category, sort]);
 
   return (

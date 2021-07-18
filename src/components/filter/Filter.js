@@ -32,11 +32,16 @@ const Filter = ({ name, array, onChange, value }) => {
           displayEmpty
           className={classes.selectEmpty}
         >
-          <MenuItem value={array[0] === "all" ? "" : "relevance"}>
+          <MenuItem
+            value={array[0] === "all" ? "" : "relevance"}
+            key={array[0]}
+          >
             {array[0]}
           </MenuItem>
-          {array.slice(1).map((item) => (
-            <MenuItem value={item}>{item}</MenuItem>
+          {array.slice(1).map((item, key) => (
+            <MenuItem value={item} key={item}>
+              {item}
+            </MenuItem>
           ))}
         </Select>
       </FormControl>

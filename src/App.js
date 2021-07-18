@@ -1,16 +1,24 @@
-import Search from "./components/search/Search";
 import { Container } from "@material-ui/core";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import Header from "./components/Header/Header";
+import Books from "./components/books/Books";
+import Book from "./components/book/Book";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 function App() {
   return (
-    <>
-      <CssBaseline />
-      <Container maxWidth="lg">
-        <Header />
+    <BrowserRouter>
+      <Header />
+      <Container>
+        <Switch>
+          <Route exact path="/">
+            <Books />
+          </Route>
+          <Route exact path="/:bookId">
+            <Book />
+          </Route>
+        </Switch>
       </Container>
-    </>
+    </BrowserRouter>
   );
 }
 

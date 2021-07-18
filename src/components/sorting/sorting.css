@@ -1,5 +1,14 @@
 .sorting {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   margin-top: 10px;
+}
+.sorting > div:nth-child(1) {
+  margin-right: 50px;
+}
+
+@media (max-width: 320px) {
+  .sorting > div:nth-child(1) {
+    margin-right: 20px;
+  }
 }
